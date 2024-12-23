@@ -1,0 +1,4 @@
+/mvnw text eol=lf
+*.cmd text eol=crlf
+# Normalización automática para otros archivos
+* text=auto
