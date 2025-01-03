@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.Map;
@@ -15,18 +16,22 @@ import java.util.HashMap;
 public class ModerationService {
 
   private final RestTemplate restTemplate = new RestTemplate();
+  private final String flaskUrl;
+
+  public ModerationService(@Value("${flask.url}") String flaskUrl) {
+    this.flaskUrl = flaskUrl;
+  }
 
   public boolean validateMessage(String message) {
     if (containsBlacklistedWords(message)) {
       return false;
     }
 
-    String url = "http://localhost:5000/predict";
     Map<String, String> request = new HashMap<>();
     request.put("message", message);
 
      Map<String, Object> response = restTemplate.exchange(
-        url,
+        flaskUrl,
         HttpMethod.POST,
         new HttpEntity<>(request),
         new ParameterizedTypeReference<Map<String, Object>>() {}
